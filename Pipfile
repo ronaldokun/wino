@@ -5,13 +5,16 @@ verify_ssl = true
 
 [dev-packages]
 ipykernel = "*"
+nbdev = "*"
 
 [packages]
-nbdev = "*"
 scrapy = "*"
 beautifulsoup4 = "*"
 lxml = "*"
 fire = "*"
+streamlit = "*"
+pandas-profiling = "*"
+spacy = "*"
 
 [requires]
 python_version = "3.7"
