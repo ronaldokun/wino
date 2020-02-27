@@ -6,12 +6,12 @@
 #     text_representation:
 #       extension: .py
 #       format_name: light
-#       format_version: '1.4'
-#       jupytext_version: 1.2.3
+#       format_version: '1.5'
+#       jupytext_version: 1.3.3
 #   kernelspec:
-#     display_name: wino
+#     display_name: wino_conda
 #     language: python
-#     name: wino
+#     name: wino_conda
 # ---
 
 # +
@@ -32,8 +32,9 @@ from bs4 import BeautifulSoup as soup
 CATALOG = "//article"
 NEXT = "/html/body/div[6]/div/div[2]/div[2]/div/div[4]/div"
 prefix = "https://wine.com.br"
-url_short = "https://www.wine.com.br/browse.ep?cID=100851&exibirEsgotados=true&listagem=horizontal&sorter=featuredProducts-desc&filters=cVINHOS"
-url_next = "https://www.wine.com.br/browse.ep?cID=100851&exibirEsgotados=true&pn={page}&listagem=horizontal&sorter=featuredProducts-desc&filters=cVINHOS"
+#url_short = "https://www.wine.com.br/browse.ep?cID=100851&exibirEsgotados=true&listagem=horizontal&sorter=featuredProducts-desc&filters=cVINHOS"
+url_short = "https://www.wine.com.br/browse.ep?cID=100851&exibirEsgotados=false&pn=1&listagem=horizontal&sorter=featuredProducts-desc&filters=cVINHOS" 
+url_next = "https://www.wine.com.br/browse.ep?cID=100851&exibirEsgotados=false&pn={page}&listagem=horizontal&sorter=featuredProducts-desc&filters=cVINHOS"
 
 
 class CatalogClassic(scrapy.Spider):
@@ -73,21 +74,56 @@ class CatalogClassic(scrapy.Spider):
 #export
 class CatalogFaster(scrapy.Spider):
     name = "catalog"
-    start_urls = [url_short] + [url_next.format(page=i) for i in range(2, 434)]
+    start_urls = [url_short] + [url_next.format(page=i) for i in range(2, 85)]
     
 
     def parse(self, response):
         wine_list = response.xpath(CATALOG)
         for block in wine_list:
-            yield {
-                "wine": block.css('div > a::attr("title")').get(),
-                "link": prefix + block.css('a::attr("href")').get(),
-                "pontuação": block.xpath('div[2]/div[2]/div[4]/div/div/div/div/span/text()').get(),
-                "avaliações": block.xpath('div[2]/div[2]/div[4]/div/a/text()').get(),
-                "volume": block.xpath('div[2]/div[2]/div[3]/text()').get()
+            tag = soup(block.get(), 'lxml')
+            key = []
+            val = []
+            
+            title = tag.find('h2')
+            
+            if title:
+                key.append("Nome")
+                val.append(title.string)
+
+            precos = tag.find_all(class_='Price-raw')        
+
+            if len(precos) >= 2:
+                precos = sorted(list(set([float(p.string) for p in precos])))
+                key.append('Preço_Sócio')
+                val.append(precos[0])
+                key.append('Preço_Normal')
+                val.append(precos[1])
+            #elif len(precos) == 2:
+            #    precos = sorted([float(p.string) for p in precos])
+#                 key.append('Preço_Sócio')
+#                 val.append(precos[0])
+#                 key.append('Preço_Normal')
+#                 val.append(precos[1])
                 
-            }
-    
+            
+                
+            avaliação = tag.find("evaluation-tag")
+            
+           # print(f"Avaliação: {avaliação.attrs}")
+            if avaliação:
+                key.append("Pontuação")
+                val.append(float(avaliação[':evaluation']))
+                
+
+            rating = tag.find('a', class_='Rating-count', string=True)
+            
+            if rating:
+                key.append("Avaliações")
+                rating = rating.string.replace("(", "")
+                rating = rating.replace(")", "")
+                val.append(rating)
+        
+        return dict(zip(key, val))
     # Second parsing method
     def parse_pages(self, response):
         crs_title = response.xpath('//h1[contains(@class,"title")]/text()')
