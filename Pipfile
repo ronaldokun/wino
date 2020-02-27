@@ -15,6 +15,7 @@ fire = "*"
 streamlit = "*"
 pandas-profiling = "*"
 spacy = "*"
+pymysql = "*"
 
 [requires]
 python_version = "3.7"
