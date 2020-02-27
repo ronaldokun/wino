@@ -123,7 +123,7 @@ class CatalogFaster(scrapy.Spider):
                 rating = rating.replace(")", "")
                 val.append(rating)
         
-        return dict(zip(key, val))
+            yield dict(zip(key, val))
     # Second parsing method
     def parse_pages(self, response):
         crs_title = response.xpath('//h1[contains(@class,"title")]/text()')
