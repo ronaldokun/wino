@@ -7,11 +7,11 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.3.3
+#       jupytext_version: 1.3.2
 #   kernelspec:
-#     display_name: wino_conda
+#     display_name: wino
 #     language: python
-#     name: wino_conda
+#     name: wino
 # ---
 
 # +

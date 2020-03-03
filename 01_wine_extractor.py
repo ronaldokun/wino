@@ -7,11 +7,11 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.3.3
+#       jupytext_version: 1.3.2
 #   kernelspec:
-#     display_name: deepfake
+#     display_name: wino
 #     language: python
-#     name: deepfake
+#     name: wino
 # ---
 
 # +
@@ -157,19 +157,5 @@ if __name__ == "__main__":
     process = CrawlerProcess()
     process.crawl(FichaTecnica)
     process.start()
-
-tag = """<div class="ClubPrice-value">
-<span>Sócio:</span>
-<span>
-<span class="Price is-loading" v-price="v-price">
-<span class="Price-raw">126.90</span>
-<span class="Price-formatted"></span>
-</span>
-</span>"""
-
-
-tag = soup(tag, 'lxml')
-
-tag.find('span', class_='Price-raw')
 
 
