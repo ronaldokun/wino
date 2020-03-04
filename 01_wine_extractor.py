@@ -119,12 +119,12 @@ class FichaTecnica(scrapy.Spider):
         
         precos = tag.find_all(class_='Price-raw')        
         
-        if len(precos) > 2:
-            precos = [float(p.string) for p in precos]
+        if len(precos) >= 2:
+            precos = sorted(list(set([float(p.string) for p in precos])))
             key.append('Preço_Sócio')
-            val.append(min(precos))
+            val.append(precos[0])
             key.append('Preço_Normal')
-            val.append(max(precos))
+            val.append(precos[1])
             
         
         keys = [t.string for t in tag.find_all('dt')]
@@ -141,7 +141,23 @@ class FichaTecnica(scrapy.Spider):
             else:
                 key.append(k)
                 val.append(v)
-           
+                
+        avaliação = tag.find("evaluation-tag")
+            
+       # print(f"Avaliação: {avaliação.attrs}")
+        if avaliação:
+            key.append("Pontuação")
+            val.append(float(avaliação[':evaluation']))
+
+
+        rating = tag.find('a', class_='Rating-count', string=True)
+
+        if rating:
+            key.append("Avaliações")
+            rating = rating.string.replace("(", "")
+            rating = rating.replace(")", "")
+            val.append(rating)
+
         
         return dict(zip(key, val))
         #try:
