@@ -133,10 +133,10 @@ class FichaTecnica(scrapy.Spider):
                
         for k,v in zip(keys, vals):
             if k in TIPOS:
-                key.append('tipo')
+                key.append('Tipo')
                 val.append(k)
             elif k in PAISES:
-                key.append('origem')
+                key.append('Origem')
                 val.append(f'{k}-{v}')
             else:
                 key.append(k)

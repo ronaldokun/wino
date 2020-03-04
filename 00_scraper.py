@@ -43,12 +43,14 @@ PAISES = {'África do Sul', 'Alemanha', 'Argentina', 'Austrália', 'Brasil', 'Ch
           'China', 'Espanha', 'Estados Unidos', 'França', 'Hungria', 'Itália', 'Líbano'
           'Nova Zelândia', 'Portugal', 'Uruguai', 'Grécia', 'Marrocos'}
 
-KEYS = {'Vinícola', 'Teor_Alcoólico', 'Amadurecimento', 'Safra','Classificação', 'Visual', 
-        'Olfativo', 'Gustativo', 'Temperatura', 'Potencial_Guarda', 'Decantação''Harmonização'}
+KEYS = {'Tipo', 'Uvas', 'Origem', 'Vinícola', 'Teor Alcoólico', 'Amadurecimento', 'Safra','Classificação', 'Visual', 
+        'Olfativo', 'Gustativo', 'Temperatura de serviço', 'Potencial de guarda', 'Decantação', 'Harmonização'}
+
+OTHER = {'Vinícola', 'Teor Alcoólico', 'Amadurecimento', 'Safra','Classificação', 'Visual', 
+        'Olfativo', 'Gustativo', 'Temperatura de serviço', 'Potencial de guarda', 'Decantação', 'Harmonização'}
 
 
-# -
-
+# +
 class CatalogClassic(scrapy.Spider):
     name = "catalog_classic"
     #url = url_short
@@ -76,6 +78,15 @@ class CatalogClassic(scrapy.Spider):
 
             if title:
                 val.append(title.string)
+            else:
+                val.append(None)
+                
+            key.append("País")
+            
+            country = tag.find('div', class_="Country")
+            
+            if country:
+                val.append(country.string)
             else:
                 val.append(None)
 
@@ -109,7 +120,7 @@ class CatalogClassic(scrapy.Spider):
                 rating = rating.replace(")", "")
                 val.append(rating)
                 
-            parse_vinho = partial(self.ficha_tecnica, key=key, val=val)
+            parse_vinho = partial(self.ficha_tecnica, dict_=dict(zip(key, val)))
                 
             yield response.follow(link, parse_vinho)
                 
@@ -121,7 +132,7 @@ class CatalogClassic(scrapy.Spider):
             yield response.follow(next_page, parse_next)
             
     # Second parsing method
-    def ficha_tecnica(self, response, key, val):
+    def ficha_tecnica(self, response, dict_):
         page = response.xpath('/html').get()
         tag = soup(page, 'lxml')
         #key = []
@@ -129,26 +140,31 @@ class CatalogClassic(scrapy.Spider):
         
         
         v = tag.find(class_="somelier__description")
-        key.append('somelier')
-        val.append(v.string.strip() if v else '')
+        dict_['somelier'] = v.string.strip() if v else None
+        
+        rights = tag.find_all('div', class_="Right")
+        
+#         keys = []
+#         vals = []
+#         for t in rights:
+#             keys.append(t.attrs.get('dt'))
+#             vals.append(t.attrs.get('dd'))
         
         keys = [t.string for t in tag.find_all('dt')]
         vals = [t.string for t in tag.find_all('dd')]
         
-               
+        dict_ = {**dict_, **{k:None for k in KEYS}}
+        
         for k,v in zip(keys, vals):
             if k in TIPOS:
-                key.append('tipo')
-                val.append(k)
+                dict_['Tipo'] = k
+                dict_['Uvas'] = v
             elif k in PAISES:
-                key.append('origem')
-                val.append(f'{k}-{v}')
-            else:
-                key.append(k)
-                val.append(v)
-                
+                dict_['Origem'] = f'{k}-{v}'
+            elif k in OTHER:
+                dict_[k] = v                
         
-        yield dict(zip(key, val))
+        yield dict_
 
 # +
 #export
@@ -241,11 +257,13 @@ if __name__ == "__main__":
     Fire(crawl)
 # -
 
-# ?list.extend
+tag = """<div class="Right">
+<dt>Rosé</dt>
+<dd>Grenache (70%), Syrah (5%), Cinsault (25%)</dd>
+</div>"""
 
-t = []
-t.extend([1,2])
+tag = soup(tag)
 
-t
+tag.dt
 
 
