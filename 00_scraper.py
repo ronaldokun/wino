@@ -71,33 +71,40 @@ class CatalogClassic(scrapy.Spider):
             val += [link]
 
             title = tag.find('h2')
+            
+            key.append("Nome")
 
             if title:
-                key.append("Nome")
                 val.append(title.string)
+            else:
+                val.append(None)
 
-            precos = tag.find_all(class_='Price-raw')        
+            precos = tag.find_all(class_='Price-raw')
+            
+            key.extend(['Preço_Sócio', 'Preço_Normal'])
 
             if len(precos) >= 2:
                 precos = sorted(list(set([float(p.string) for p in precos])))
-                key.append('Preço_Sócio')
-                val.append(precos[0])
-                key.append('Preço_Normal')
-                val.append(precos[1])
+                val.extend(precos[0:2])
+            else:
+                val.extend([None]*2)
 
 
             avaliação = tag.find("evaluation-tag")
+                       
+            key.append("Pontuação")
 
-           # print(f"Avaliação: {avaliação.attrs}")
             if avaliação:
-                key.append("Pontuação")
                 val.append(float(avaliação[':evaluation']))
-
-
+            else:
+                val.append(None)
+                       
+                       
+            key.append("Avaliações")
+ 
             rating = tag.find('a', class_='Rating-count', string=True)
 
             if rating:
-                key.append("Avaliações")
                 rating = rating.string.replace("(", "")
                 rating = rating.replace(")", "")
                 val.append(rating)
@@ -106,8 +113,6 @@ class CatalogClassic(scrapy.Spider):
                 
             yield response.follow(link, parse_vinho)
                 
-            #yield dict(zip(key, val))
-
 
         count +=1
         next_page = url_next.format(page=count)
@@ -235,5 +240,12 @@ def crawl():
 if __name__ == "__main__":
     Fire(crawl)
 # -
+
+# ?list.extend
+
+t = []
+t.extend([1,2])
+
+t
 
 
