@@ -7,7 +7,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.3.2
+#       jupytext_version: 1.3.4
 #   kernelspec:
 #     display_name: wino
 #     language: python
@@ -256,14 +256,5 @@ def crawl():
 if __name__ == "__main__":
     Fire(crawl)
 # -
-
-tag = """<div class="Right">
-<dt>Rosé</dt>
-<dd>Grenache (70%), Syrah (5%), Cinsault (25%)</dd>
-</div>"""
-
-tag = soup(tag)
-
-tag.dt
 
 

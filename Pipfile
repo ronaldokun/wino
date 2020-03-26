@@ -16,6 +16,8 @@ streamlit = "*"
 pandas-profiling = "*"
 spacy = "*"
 pymysql = "*"
+pulp = "*"
+mip = "*"
 
 [requires]
 python_version = "3.7"
