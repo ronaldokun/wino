@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.3.4
+#       jupytext_version: 1.3.2
 #   kernelspec:
 #     display_name: wino
 #     language: python
@@ -37,6 +37,7 @@ def get_data():
 
 PATH = Path.cwd() / 'data'
 DATA: pd.DataFrame = get_data()
+
 NUM: List[str] = ['Custo', 'Preço_Normal', 'Pontuação', 'Avaliações', 'Temperatura', 'Teor_Alcoólico', 'Potencial_Guarda']
 CAT: List[str] = ['Tipo', 'País', 'Puro']
 COLS = NUM + CAT
@@ -44,6 +45,7 @@ INTERVAL_NUM = [(0, math.ceil(DATA[m].max())) for m in NUM]
 INTERVAL_CAT = [{k:(0,1) for k in DATA.loc[DATA[m].notna(), m].unique()} for m in CAT]
 BUDGET: int = 1000000
 CONSTRAINTS = {k:v for k,v in zip(NUM+CAT, INTERVAL_NUM+INTERVAL_CAT)}
+del CONSTRAINTS['Puro'][0]
 VARIABLE = 'Preço_Normal'
 
 
@@ -118,7 +120,7 @@ def run_model(variable: str=VARIABLE,
     # Main constraint is budget
     custo = DATA['Custo'].to_list()
     m += xsum(wines[i] * custo[i] for i in N) <= budget
-    m += xsum(wines[i] * custo[i] for i in N) >= budget - df.Custo.min()
+    m += xsum(wines[i] * custo[i] for i in N) >= budget - DATA.Custo.min()
 
     cat = set(constraints.keys()).intersection(CAT)
     num = set(constraints.keys()).intersection(NUM)
@@ -141,8 +143,8 @@ def run_model(variable: str=VARIABLE,
                 m += xsum(wines[i] * df_dummies[k].to_list()[i] for i in N) <= maximo * xsum(wines[i] for i in N)
     for i in N:        
         for key, (minimo, maximo) in num.items():
-            m += wines[i] * df[key].to_list()[i] >= minimo * wines[i]
-            m += wines[i] * df[key].to_list()[i] <= maximo * wines[i]
+            m += wines[i] * DATA[key].to_list()[i] >= minimo * wines[i]
+            m += wines[i] * DATA[key].to_list()[i] <= maximo * wines[i]
             
             
     solution, status = optimize_model(m)
@@ -150,7 +152,7 @@ def run_model(variable: str=VARIABLE,
     if solution is not None:
         multiplier = ub if is_uniform else 1
         result = DATA.loc[solution.keys()].copy()
-        result['Quantidade'] = [v* multiplier for v in solution.values()]        
+        result['Quantidade'] = [int(v* multiplier) for v in solution.values()]        
         return result, status
     
     print('!!!No result was found for the Optimization Problem with the Variable and Constraints provided!!!')
@@ -159,12 +161,7 @@ def run_model(variable: str=VARIABLE,
 __ALL__ = [PATH, DATA, COLS, BUDGET, CONSTRAINTS, VARIABLE, get_data, safra_stats, run_model]
 
 # +
-# resultado, status = run_model()
-# if status:
+#resultado, status = run_model(constraints={'Avaliações': (777, 10000)})
+#if status:
 #     safra_stats(resultado)
-# resultado[COLS]
-# -
-
-CONSTRAINTS
-
-
+#     resultado[COLS]
