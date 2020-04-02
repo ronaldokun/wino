@@ -32,10 +32,10 @@ Numa possível tentativa de montar um negócio nos moldes da Wine Brasil, um dos
 fundamentais é como fazer a compra dos vinhos com o maior potencial de agradar os consumidores, i.e. como
 otimizar a montagem do estoque e maximizar o nosso potencial como competidor.
 
-Esse tipo de problema é do tipo **Programação Inteira Mista**, com aplicabilidade em diversos segmentos.  
+Esse tipo de problema é do tipo **Programação Inteira Mista**, com aplicabilidade em diversos segmentos.
+
+[Código-Fonte](https://github.com/ronaldokun/wino/blob/master/app.py)
 """)
-# [See source code](https://github.com/streamlit/demo-uber-nyc-pickups/blob/master/app.py)
-# """)
 
 st.subheader('Conjunto de Dados')
 if st.checkbox("Mostrar Dados?"):

@@ -1,5 +1,5 @@
 # Wino - Otimização do Estoque de Vinhos
->A person with a severe alcohol/drinking problem. A wino has no regard for the quality of the swill he or she ingests, often becoming so incoherent that they begin to indulge in other vices they aren't normally known for such as smoking cigarettes or chewing cherry flavored tobacco by the tin. A "wino" doesn't care about their appearance and frequently can be found stumbling around shirtless and barefoot trying to start fights with passersby for no apparent reason. Any attempt to inhibit the wino's consumption only results in further consumption. *Urban Dictionary
+>A person with a severe alcohol/drinking problem. A wino has no regard for the quality of the swill he or she ingests, often becoming so incoherent that they begin to indulge in other vices they aren't normally known for such as smoking cigarettes or chewing cherry flavored tobacco by the tin. A "wino" doesn't care about their appearance and frequently can be found stumbling around shirtless and barefoot trying to start fights with passersby for no apparent reason. Any attempt to inhibit the wino's consumption only results in further consumption. *Urban Dictionary*
 
 A Wine Brasil, além de ser uma loja online de vinhos, também funciona como um clube.
 
