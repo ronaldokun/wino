@@ -5,17 +5,14 @@ verify_ssl = true
 
 [dev-packages]
 ipykernel = "*"
-
-[packages]
 scrapy = "*"
 beautifulsoup4 = "*"
 lxml = "*"
+
+[packages]
 fire = "*"
 streamlit = "*"
 pandas-profiling = "*"
-spacy = "*"
-pymysql = "*"
-pulp = "*"
 mip = "*"
 
 [requires]
