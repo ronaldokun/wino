@@ -41,7 +41,7 @@ st.subheader('Conjunto de Dados')
 if st.checkbox("Mostrar Dados?"):
     st.dataframe(DATA)
 
-variables = set(CONSTRAINTS.keys())
+variables = set(NUM.keys())
 variables.remove('Custo')
 
 st.markdown("""
